@@ -1,0 +1,366 @@
+{
+  "clip": "03_game.mp4",
+  "duration_s": 206.99,
+  "captured_fps": 60,
+  "output_fps": 30,
+  "resolution": "1920x1080",
+  "events": [
+    {
+      "t": 1.52,
+      "kind": "user_action",
+      "action": "says",
+      "text": "Make me a game for my table"
+    },
+    {
+      "t": 1.53,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 1.53,
+      "kind": "user_say",
+      "text": "Make me a game for my table"
+    },
+    {
+      "t": 2.57,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 2.57,
+      "kind": "sound",
+      "name": "dismiss"
+    },
+    {
+      "t": 2.57,
+      "kind": "agent_say",
+      "text": "Lovely, we will pause the cooking scene and build you a hands-only table game."
+    },
+    {
+      "t": 2.57,
+      "kind": "tool_call",
+      "name": "clear_scene",
+      "args": {
+        "keep": []
+      }
+    },
+    {
+      "t": 2.58,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 2.58,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "cleared",
+        "panels",
+        "highlights",
+        "ghost_hands",
+        "programs",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 4.1,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 4.1,
+      "kind": "agent_say",
+      "text": "Building it now on your table, a quick pinch-and-putt game you can play seated."
+    },
+    {
+      "t": 4.1,
+      "kind": "status",
+      "text": "Building it..."
+    },
+    {
+      "t": 35.29,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 35.29,
+      "kind": "tool_call",
+      "name": "run_code",
+      "args": {
+        "id": "table-putt",
+        "js": "const T = aide.THREE;\nconst BALL_R = 0.02;\nconst HOLE_R = 0.045;\nconst START = new T.Vector3(0, 0.031, 0.12);\nconst HOLE = new T.Vector3(0, 0.012, -0.32);\nconst FW = { w: 0.28, len: 0.7, cz: -0.1 };\n\naide.say('Pinch near the white ball, drag gently, and flick to putt into the far hole.');\n\nlet strokes = 0;\nlet best = 0;\nlet holding = false;\nlet holdHand = null;\nlet holed = false;\nlet holeTimer = -1;\nlet doneCalled = false;\n\nconst greenMat = new T.MeshStandardMaterial({ color: '#2e8b4a', roughness: 0.9 });\nconst green = new T.Mesh(new T.BoxGeometry(FW.w, 0.012, FW.len), greenMat);\ngreen.position.set(0, 0.006, FW.cz);\naide.scene.add(green);\n\nconst fringe = new T.Mesh(new T.BoxGeometry(FW.w + 0.04, 0.006, FW.len + 0.04),\n  new T.MeshStandardMaterial({ color: '#1d5c30', roughness: 0.9 }));\nfringe.position.set(0, 0.003, FW.cz);\naide.scene.add(fringe);\n\nconst holeMesh = new T.Mesh(new T.CylinderGeometry(HOLE_R, HOLE_R, 0.014, 28),\n  new T.MeshStandardMaterial({ color: '#0a0a0a', roughness: 1 }));\nholeMesh.position.copy(HOLE);\naide.scene.add(holeMesh);\nconst rim = new T.Mesh(new T.RingGeometry(HOLE_R, HOLE_R + 0.008, 28),\n  new T.MeshStandardMaterial({ color: '#ffffff', roughness: 0.6, side: T.DoubleSide }));\nrim.rotation.x = -Math.PI / 2;\nrim.position.set(HOLE.x, 0.0135, HOLE.z);\naide.scene.add(rim);\n\nconst wallMat = new T.MeshStandardMaterial({ color: '#8a5a2b', roughness: 0.7 });\nfunction addWall(x, z, sx, sz) {\n  const m = new T.Mesh(new T.BoxGeometry(sx, 0.05, sz), wallMat);\n  m.position.set(x, 0.025, z);\n  aide.scene.add(m);\n  aide.physics.add(m, { shape: 'box', size: [sx, 0.05, sz], mass: 0, isStatic: true, bounce: 0.6, friction: 0.2 });\n  return m;\n}\nconst hw = FW.w / 2 + 0.01;\naddWall(-hw, FW.cz, 0.02, FW.len + 0.04);\naddWall(hw, FW.cz, 0.02, FW.len + 0.04);\naddWall(0, FW.cz - FW.len / 2 - 0.01, FW.w + 0.06, 0.02);\naddWall(0, FW.cz + FW.len / 2 + 0.01, FW.w + 0.06, 0.02);\n\nconst ball = aide.spawn('ball', { radius: BALL_R, color: '#ffffff', position: [START.x, START.y, START.z], physics: { mass: 0.05, bounce: 0.45, friction: 0.6 } });\n\nconst strokeLabel = aide.spawn('label', { text: 'Strokes: 0', size: 0.03, position: [-0.12, 0.22, -0.1] });\nconst bestLabel = aide.spawn('label', { text: 'Best: -', size: 0.028, position: [0.13, 0.22, -0.1] });\nconst hintLabel = aide.spawn('label', { text: 'Pinch ball to putt', size: 0.025, position: [0, 0.15, 0.12] });\n\nconst panel = aide.panel({\n  title: 'Table Mini-Golf',\n  text: 'Putt into the far hole. Fewest strokes wins.',\n  buttons: [{ id: 'reset', label: 'Reset ball' }, { id: 'again', label: 'Restart game' }],\n  onButton: (id) => {\n    if (id === 'reset') resetBall(false);\n    if (id === 'again') restart();\n  }\n});\n\nfunction resetBall(silent) {\n  if (holed) return;\n  ball.position.copy(START);\n  if (ball.body) { ball.body.velocity.set(0, 0, 0); ball.body.angularVelocity.set(0, 0, 0); ball.body.isStatic = false; }\n  holding = false; holdHand = null;\n  if (!silent) aide.sound.pop();\n}\nfunction restart() {\n  strokes = 0;\n  holed = false;\n  holeTimer = -1;\n  strokeLabel.setText('Strokes: 0');\n  hintLabel.setText('Pinch ball to putt');\n  ball.position.copy(START);\n  if (ball.body) { ball.body.velocity.set(0, 0, 0); ball.body.isStatic = false; }\n  holding = false; holdHand = null;\n  aide.sound.pop();\n}\n\nconst tmpV = new T.Vector3();\n\naide.onPinch((e) => {\n  if (holed || holding) return;\n  const d = e.point.distanceTo(ball.position);\n  if (d < 0.09) {\n    holding = true;\n    holdHand = e.hand;\n    if (ball.body) { ball.body.velocity.set(0, 0, 0); ball.body.isStatic = true; }\n    aide.sound.tick();\n    hintLabel.setText('Flick to putt, release');\n  }\n});\n\nfunction clampToFairway(p) {\n  const minX = -FW.w / 2 + BALL_R + 0.005;\n  const maxX = FW.w / 2 - BALL_R - 0.005;\n  const minZ = FW.cz - FW.len / 2 + BALL_R;\n  const maxZ = FW.cz + FW.len / 2 - BALL_R;\n  p.x = Math.max(minX, Math.min(maxX, p.x));\n  p.z = Math.max(minZ, Math.min(maxZ, p.z));\n  p.y = 0.012 + BALL_R;\n}\n\naide.onFrame((dt, t) => {\n  if (holding) {\n    const h = aide.hands[holdHand];\n    if (!h.visible || !h.pinching) {\n      const v = h.visible ? h.velocity : tmpV.set(0, 0, 0);\n      tmpV.copy(v);\n      tmpV.y = 0;\n      const sp = tmpV.length();\n      if (ball.body) ball.body.isStatic = false;\n      holding = false;\n      if (sp > 0.25) {\n        if (sp > 2.5) tmpV.multiplyScalar(2.5 / sp);\n        if (ball.body) ball.body.velocity.copy(tmpV);\n        strokes += 1;\n        strokeLabel.setText('Strokes: ' + strokes);\n        aide.score(strokes);\n        aide.sound.pop();\n        hintLabel.setText('Nice! ' + strokes + (strokes === 1 ? ' stroke' : ' strokes'));\n      } else {\n        if (ball.body) ball.body.isStatic = false;\n        hintLabel.setText('Flick a bit harder');\n      }\n      holdHand = null;\n    } else {\n      tmpV.copy(h.pinchPoint);\n      clampToFairway(tmpV);\n      ball.position.copy(tmpV);\n      if (ball.body) ball.body.velocity.set(0, 0, 0);\n    }\n    return;\n  }\n\n  if (!holed && ball.body && !ball.body.isStatic) {\n    if (Math.abs(ball.position.x) > 0.5 || Math.abs(ball.position.z) > 0.55 || ball.position.y < -0.05) {\n      resetBall(false);\n      hintLabel.setText('Kept on fairway');\n      return;\n    }\n    const dx = ball.position.x - HOLE.x;\n    const dz = ball.position.z - HOLE.z;\n    const dist = Math.sqrt(dx * dx + dz * dz);\n    const speed = ball.body.velocity.length();\n    if (dist < HOLE_R + 0.008 && ball.position.y < 0.06 && speed < 1.6) {\n      holed = true;\n      holeTimer = 5.0;\n      ball.body.velocity.set(0, 0, 0);\n      ball.body.isStatic = true;\n      ball.position.set(HOLE.x, 0.02, HOLE.z);\n      if (best === 0 || strokes < best) best = strokes;\n      bestLabel.setText('Best: ' + best);\n      strokeLabel.setText('Holed in ' + strokes + '!');\n      hintLabel.setText(strokes <= 2 ? 'Amazing putt!' : strokes <= 4 ? 'Holed! Great!' : 'Holed! Play again?');\n      aide.spawn('burst', { position: [HOLE.x, 0.06, HOLE.z], color: '#ffd400', count: 32 });\n      aide.sound.score();\n      aide.sound.chime();\n      aide.score(strokes);\n      aide.say(strokes <= 2 ? 'Wow, holed in ' + strokes + '!' : 'Holed in ' + strokes + ' strokes!');\n      return;\n    }\n    if (ball.body.velocity.length() < 0.02) {\n      ball.body.velocity.set(0, 0, 0);\n    }\n  }\n\n  if (holed && holeTimer > 0 && !doneCalled) {\n    holeTimer -= dt;\n    const pulse = 1 + Math.sin(t * 6) * 0.06;\n    rim.scale.set(pulse, pulse, 1);\n    if (holeTimer <= 0) {\n      doneCalled = true;\n      panel.close();\n      aide.done('mini-golf holed in ' + strokes + ' strokes, best ' + best);\n    }\n  }\n});",
+        "at": {
+          "near": "plane-3",
+          "offset": [
+            0,
+            0.05,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "t": 35.37,
+      "kind": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Make it harder",
+          "New game",
+          "Back to cooking"
+        ]
+      }
+    },
+    {
+      "t": 35.37,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 35.37,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "running",
+        "objects",
+        "anchor_surface",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 35.37,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "chips",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 36.57,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 36.57,
+      "kind": "agent_say",
+      "text": "Your table putt game is ready on the table. Pinch near the ball and flick forward to putt toward the hole."
+    },
+    {
+      "t": 36.57,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 76.08,
+      "kind": "user_action",
+      "action": "pinch right"
+    },
+    {
+      "t": 76.17,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 77.64,
+      "kind": "user_action",
+      "action": "flick putt"
+    },
+    {
+      "t": 94.78,
+      "kind": "user_action",
+      "action": "pinch right"
+    },
+    {
+      "t": 96.34,
+      "kind": "user_action",
+      "action": "flick putt"
+    },
+    {
+      "t": 114.5,
+      "kind": "user_action",
+      "action": "pinch the ball and flick toward the hole (this putt goes in, hole in one at ~115.4)"
+    },
+    {
+      "t": 115.37,
+      "kind": "sound",
+      "name": "score"
+    },
+    {
+      "t": 115.37,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 115.37,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 115.37,
+      "kind": "event",
+      "name": "game_score",
+      "data": {
+        "id": "table-putt",
+        "score": 1
+      }
+    },
+    {
+      "t": 115.69,
+      "kind": "sound",
+      "name": "score"
+    },
+    {
+      "t": 115.69,
+      "kind": "sound",
+      "name": "chime"
+    },
+    {
+      "t": 115.69,
+      "kind": "sound",
+      "name": "score"
+    },
+    {
+      "t": 115.69,
+      "kind": "event",
+      "name": "game_score",
+      "data": {
+        "id": "table-putt",
+        "score": 1
+      }
+    },
+    {
+      "t": 116.65,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 116.65,
+      "kind": "agent_say",
+      "text": "Nice, holed in 1."
+    },
+    {
+      "t": 116.65,
+      "kind": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Play again",
+          "Make it harder",
+          "Back to cooking"
+        ]
+      }
+    },
+    {
+      "t": 116.65,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 116.65,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "chips",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 118.02,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 118.02,
+      "kind": "agent_say",
+      "text": "Wonderful putting, you are top of the board now."
+    },
+    {
+      "t": 118.02,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 118.02,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 119.22,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 120.73,
+      "kind": "sound",
+      "name": "dismiss"
+    },
+    {
+      "t": 120.73,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 120.73,
+      "kind": "event",
+      "name": "code_done",
+      "data": {
+        "id": "table-putt",
+        "summary": "mini-golf holed in 1 strokes, best 1"
+      }
+    },
+    {
+      "t": 122.01,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 122.01,
+      "kind": "agent_say",
+      "text": "That was a quick round, saving your best score."
+    },
+    {
+      "t": 122.01,
+      "kind": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Play again",
+          "Make it harder",
+          "Back to cooking"
+        ]
+      }
+    },
+    {
+      "t": 122.01,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 122.01,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "chips",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 122.73,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 122.73,
+      "kind": "agent_say",
+      "text": "All saved, a one stroke hole out on the table putt."
+    },
+    {
+      "t": 122.73,
+      "kind": "status",
+      "text": ""
+    }
+  ],
+  "notes": "Trim suggestions: build wait 4.1-35.3 (status \"Building it...\"); two putts at 76-80 and 95-99 do not register (flick too slow); the hole-in-one is at 114.5-116, burst and \"Holed in 1!\" right after."
+}

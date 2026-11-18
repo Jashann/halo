@@ -1,0 +1,16 @@
+# Upload filter for Cloud Build (passed with --ignore-file=deploy/.gcloudignore)
+.git/
+node_modules/
+web/dist/
+server/data/
+camtest/
+tests/
+*.pem
+*.log
+.claude/
+.cursor/
+.codex/
+.vscode/
+web/dist-emulator/
+.agents/
+.github/

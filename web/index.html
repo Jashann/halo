@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#0b0f14" />
+    <link rel="icon" href="data:," />
+    <title>Halo</title>
+        <style>
+      :root { --ink: #0b0f14; --text: #f6f4ef; --dim: #b9bec7; --halo: #ffd27a; --halo-soft: #fff1cc; --halo-ink: #2a1d00; }
+      html, body { margin: 0; height: 100%; background: var(--ink); color: var(--text); font-family: Inter, 'Segoe UI', system-ui, sans-serif; }
+      #scene-container { position: fixed; inset: 0; }
+      #start { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+        background: radial-gradient(900px 600px at 50% 38%, #2a2210 0%, #12100b 38%, var(--ink) 70%); z-index: 10; padding: 24px; text-align: center; overflow: hidden; }
+      .halo { position: relative; width: 168px; height: 168px; margin-bottom: 6px; }
+      .halo::before { content: ''; position: absolute; inset: -46px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 210, 122, 0.34) 0%, rgba(255, 210, 122, 0.08) 45%, transparent 70%); animation: breathe 4s ease-in-out infinite; }
+      .halo::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 7px solid var(--halo);
+        box-shadow: 0 0 24px rgba(255, 210, 122, 0.9), 0 0 70px rgba(255, 210, 122, 0.45), inset 0 0 24px rgba(255, 210, 122, 0.6); animation: breathe 4s ease-in-out infinite; }
+      @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.92; } 50% { transform: scale(1.04); opacity: 1; } }
+      #start h1 { font-size: 72px; font-weight: 700; margin: 0; letter-spacing: -1.5px; }
+      #start .tag { font-size: 24px; color: var(--halo-soft); margin: 0; font-weight: 500; }
+      #start p { font-size: 20px; color: var(--dim); max-width: 620px; margin: 0; line-height: 1.5; }
+      #start-btn { font: 700 32px Inter, system-ui, sans-serif; color: var(--halo-ink); background: linear-gradient(180deg, #ffe2a3, var(--halo)); border: 0; border-radius: 999px;
+        padding: 24px 88px; cursor: pointer; margin-top: 10px; box-shadow: 0 10px 50px rgba(255, 210, 122, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6); transition: transform 0.15s ease; }
+      #start-btn:hover { transform: translateY(-1px) scale(1.02); }
+      #start-btn:disabled { opacity: 0.6; cursor: progress; }
+      #start-note { font-size: 16px; color: var(--dim); min-height: 1.4em; }
+      #start small { color: #858c97; font-size: 15px; }
+      #dock { position: fixed; left: 12px; right: 12px; bottom: 12px; display: none; gap: 8px; align-items: center; z-index: 20; flex-wrap: wrap; }
+      #dock input { flex: 1 1 280px; font-size: 18px; padding: 10px 14px; border-radius: 12px; border: 1px solid #2a3340; background: rgba(11, 15, 20, 0.9); color: var(--text); }
+      #dock button { font-size: 16px; padding: 10px 14px; border-radius: 12px; border: 1px solid #2a3340; background: rgba(18, 24, 33, 0.92); color: var(--text); cursor: pointer; }
+      #dock button.primary { background: var(--halo); color: var(--halo-ink); border-color: var(--halo); font-weight: 700; }
+      #hud { position: fixed; left: 12px; top: 12px; font-size: 13px; color: var(--dim); z-index: 20; display: none; background: rgba(11, 15, 20, 0.75); padding: 6px 10px; border-radius: 10px; }
+      body.demo #dock, body.demo #hud { display: none !important; }
+      #emu-note { display: none; position: fixed; right: 18px; bottom: 14px; z-index: 100000; font-size: 15px; color: rgba(246, 244, 239, 0.62);
+        background: rgba(11, 15, 20, 0.35); padding: 5px 10px; border-radius: 8px; pointer-events: none; letter-spacing: 0.2px; }
+      body.demo.in-xr #emu-note { display: block; }
+    </style>
+  </head>
+  <body>
+    <div id="scene-container"></div>
+    <div id="start">
+      <div class="halo" aria-hidden="true"></div>
+      <h1>Halo</h1>
+      <p class="tag">The assistant that builds what you need, right where you need it.</p>
+      <p>Halo sees what you see and knows your room. Ask, and it shows you: recipes on your counter, hands that demonstrate the cut, timers by the stove, games and 3D explanations on your table. Hands only, seated or standing.</p>
+      <button id="start-btn">Start</button>
+      <div id="start-note"></div>
+      <small>Halo asks for your headset camera and microphone, then opens mixed reality.</small>
+    </div>
+    <div id="hud"></div>
+    <div id="emu-note">Recorded in Meta's Quest emulator</div>
+    <div id="dock">
+      <input id="say-input" placeholder="Type to Halo (desktop testing)" autocomplete="off" />
+      <button id="say-send" class="primary">Send</button>
+      <button id="talk-btn">Hold to talk</button>
+    </div>
+    <script type="module" src="/src/index.ts"></script>
+  </body>
+</html>

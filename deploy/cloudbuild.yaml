@@ -1,0 +1,12 @@
+# Builds the single Halo image (web app + server) from the jarvis-vr root with server/Dockerfile.
+# Used by: gcloud builds submit --config deploy/cloudbuild.yaml --ignore-file=deploy/.gcloudignore .
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ['build', '-f', 'server/Dockerfile', '-t', '${_IMAGE}', '.']
+images: ['${_IMAGE}']
+substitutions:
+  _IMAGE: us-central1-docker.pkg.dev/YOUR_PROJECT_ID/halo/halo:latest
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8
+timeout: 1200s

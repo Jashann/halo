@@ -1,0 +1,19 @@
+{
+  "when": "2026-11-18T04:56:25.387Z",
+  "scene": "kitchen, 3 panels, ghost hands loop, highlight, timer, golf",
+  "frames": 1595,
+  "seconds": 6,
+  "fps_avg": 265.8,
+  "frame_ms_p50": 3.5,
+  "frame_ms_p95": 5.2,
+  "frame_ms_p99": 5.5,
+  "halo_update_ms_avg": 0.26,
+  "render_call_ms_avg": 0.39,
+  "draw_calls_avg": 118,
+  "triangles_avg": 48878,
+  "panels": 3,
+  "programs": [
+    "golf"
+  ],
+  "ghost_active": true
+}

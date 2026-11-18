@@ -1,0 +1,682 @@
+{
+  "clip": "02_cook.mp4",
+  "duration_s": 48.71,
+  "captured_fps": 60,
+  "output_fps": 30,
+  "resolution": "1920x1080",
+  "events": [
+    {
+      "t": 1.51,
+      "kind": "user_action",
+      "action": "says",
+      "text": "What can I cook?"
+    },
+    {
+      "t": 1.54,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 1.54,
+      "kind": "user_say",
+      "text": "What can I cook?"
+    },
+    {
+      "t": 2.74,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 2.74,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 2.74,
+      "kind": "agent_say",
+      "text": "Let me peek in your kitchen to see what you have to work with."
+    },
+    {
+      "t": 2.74,
+      "kind": "status",
+      "text": "Looking..."
+    },
+    {
+      "t": 2.74,
+      "kind": "tool_call",
+      "name": "look",
+      "args": {
+        "prompt": "What ingredients, fridge contents, and cooking items are visible in this kitchen?"
+      }
+    },
+    {
+      "t": 2.74,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 2.74,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "image_b64",
+        "mime",
+        "width",
+        "height",
+        "view",
+        "sample",
+        "source",
+        "scene_summary"
+      ]
+    },
+    {
+      "t": 4.1,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 4.1,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 4.1,
+      "kind": "agent_say",
+      "text": "I can see eggs, spinach, carrots, broccoli, zucchini, tomatoes and citrus in there. Let me lay out a few quick ideas."
+    },
+    {
+      "t": 4.1,
+      "kind": "tool_call",
+      "name": "show_panel",
+      "args": {
+        "id": "cook-choices",
+        "title": "What to cook?",
+        "place": {
+          "near": "front",
+          "offset": [
+            0,
+            0,
+            0
+          ]
+        },
+        "size": "medium",
+        "spec": {
+          "subtitle": "From your fridge",
+          "bullets": [
+            "Veggie stir fry: broccoli, carrots, zucchini, spinach",
+            "Spinach and egg scramble with tomato",
+            "Roast veg tray: zucchini, eggplant, carrots, tomato",
+            "Fresh spinach salad with citrus and carrot"
+          ],
+          "buttons": [
+            {
+              "id": "stirfry",
+              "label": "Stir fry"
+            },
+            {
+              "id": "scramble",
+              "label": "Scramble"
+            },
+            {
+              "id": "roast",
+              "label": "Roast veg"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "t": 4.1,
+      "kind": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Stir fry please",
+          "Egg scramble please",
+          "Roast veg please"
+        ]
+      }
+    },
+    {
+      "t": 4.1,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 4.1,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "position",
+        "buttons",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 4.1,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "chips",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 4.58,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 10,
+      "kind": "user_action",
+      "action": "pokes chip 0"
+    },
+    {
+      "t": 10.02,
+      "kind": "sound",
+      "name": "press"
+    },
+    {
+      "t": 10.02,
+      "kind": "user_say",
+      "text": "Stir fry please"
+    },
+    {
+      "t": 10.1,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 12.02,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 12.02,
+      "kind": "sound",
+      "name": "dismiss"
+    },
+    {
+      "t": 12.02,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 12.02,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 12.02,
+      "kind": "agent_say",
+      "text": "Great choice, I will put your veggie stir fry steps up and mark a chopping spot."
+    },
+    {
+      "t": 12.02,
+      "kind": "tool_call",
+      "name": "show_panel",
+      "args": {
+        "id": "stirfry-recipe",
+        "title": "Veggie Stir Fry",
+        "place": {
+          "near": "plane-3",
+          "offset": [
+            0.55,
+            0.3,
+            0
+          ]
+        },
+        "size": "medium",
+        "spec": {
+          "subtitle": "Uses what is in your fridge",
+          "steps": [
+            "Wash hands, then wash broccoli, carrots, zucchini and spinach",
+            "Chop broccoli, carrots and zucchini into bite size pieces",
+            "Heat oil in a pan on medium high, pan handle turned inward",
+            "Stir fry carrots and broccoli 4 minutes, then add zucchini 3 minutes",
+            "Add spinach and tomato, stir until spinach wilts, 1 to 2 minutes",
+            "Serve hot. Wash hands after handling raw veg and board"
+          ]
+        }
+      }
+    },
+    {
+      "t": 12.02,
+      "kind": "tool_call",
+      "name": "highlight",
+      "args": {
+        "id": "chop-spot",
+        "label": "Chop here, stable board",
+        "shape": "zone",
+        "target": {
+          "surface_id": "plane-3",
+          "offset": [
+            -0.4,
+            0.02,
+            0.1
+          ]
+        }
+      }
+    },
+    {
+      "t": 12.02,
+      "kind": "tool_call",
+      "name": "ghost_hands",
+      "args": {
+        "at": {
+          "near": "plane-3",
+          "offset": [
+            -0.4,
+            0.15,
+            0.1
+          ]
+        },
+        "label": "Claw grip, fingertips tucked",
+        "motion": "chop"
+      }
+    },
+    {
+      "t": 12.02,
+      "kind": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Next step",
+          "Start stir fry timer",
+          "Swap an ingredient"
+        ]
+      }
+    },
+    {
+      "t": 12.02,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 12.02,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "position",
+        "buttons",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 12.02,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "position",
+        "surface",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 12.02,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "motion",
+        "period",
+        "until",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 12.02,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "chips",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 13.06,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 13.06,
+      "kind": "agent_say",
+      "text": "Your stir fry plan is up beside the table. Start by washing your hands and the veg, and use a claw grip on a stable board when you chop."
+    },
+    {
+      "t": 13.06,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 15.69,
+      "kind": "user_action",
+      "action": "says",
+      "text": "Show me the cut"
+    },
+    {
+      "t": 15.7,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 15.7,
+      "kind": "user_say",
+      "text": "Show me the cut"
+    },
+    {
+      "t": 16.66,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 16.66,
+      "kind": "agent_say",
+      "text": "Of course, watch the claw grip here."
+    },
+    {
+      "t": 16.66,
+      "kind": "tool_call",
+      "name": "ghost_hands",
+      "args": {
+        "at": {
+          "near": "plane-3",
+          "offset": [
+            -0.4,
+            0.15,
+            0.1
+          ]
+        },
+        "label": "Claw grip, fingertips tucked back",
+        "motion": "chop"
+      }
+    },
+    {
+      "t": 16.66,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 16.66,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "motion",
+        "period",
+        "until",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 17.94,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 17.94,
+      "kind": "agent_say",
+      "text": "Tuck your fingertips in like a claw and keep them well back from the knife."
+    },
+    {
+      "t": 17.94,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 20.85,
+      "kind": "hero",
+      "shot": "ghost hands push-in"
+    },
+    {
+      "t": 34.32,
+      "kind": "user_action",
+      "action": "pokes chip 1"
+    },
+    {
+      "t": 34.34,
+      "kind": "sound",
+      "name": "press"
+    },
+    {
+      "t": 34.34,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 34.34,
+      "kind": "user_say",
+      "text": "Start stir fry timer"
+    },
+    {
+      "t": 35.38,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 35.38,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 35.38,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 35.38,
+      "kind": "agent_say",
+      "text": "Starting your stir fry timer now, 4 minutes for the carrots and broccoli."
+    },
+    {
+      "t": 35.38,
+      "kind": "tool_call",
+      "name": "timer",
+      "args": {
+        "label": "Stir fry carrots broccoli",
+        "seconds": 240,
+        "at": {
+          "near": "plane-3",
+          "offset": [
+            0.3,
+            0.2,
+            -0.2
+          ]
+        }
+      }
+    },
+    {
+      "t": 35.38,
+      "kind": "tool_call",
+      "name": "update_panel",
+      "args": {
+        "id": "stirfry-recipe",
+        "patch": {
+          "spec": {
+            "active_step": 3,
+            "subtitle": "Timer running: carrots and broccoli"
+          }
+        }
+      }
+    },
+    {
+      "t": 35.38,
+      "kind": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Next step",
+          "Add zucchini",
+          "Stop timer"
+        ]
+      }
+    },
+    {
+      "t": 35.38,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "seconds",
+        "label",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 35.38,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "position",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 35.38,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "chips",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 35.46,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 36.02,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 36.02,
+      "kind": "agent_say",
+      "text": "Keep the pan handle turned inward and stir often. When the timer ends, add the zucchini."
+    },
+    {
+      "t": 36.02,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 42.85,
+      "kind": "user_action",
+      "action": "says",
+      "text": "Take a look at my pan. Is it done?"
+    },
+    {
+      "t": 42.9,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 42.9,
+      "kind": "user_say",
+      "text": "Take a look at my pan. Is it done?"
+    },
+    {
+      "t": 44.03,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 44.03,
+      "kind": "agent_say",
+      "text": "Let me take a close look at your pan."
+    },
+    {
+      "t": 44.03,
+      "kind": "status",
+      "text": "Looking..."
+    },
+    {
+      "t": 44.03,
+      "kind": "tool_call",
+      "name": "look",
+      "args": {
+        "prompt": "Look at the pan and stir fry contents. Is it done? Describe colors, doneness, wilting."
+      }
+    },
+    {
+      "t": 44.1,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 44.1,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 44.1,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "image_b64",
+        "mime",
+        "width",
+        "height",
+        "view",
+        "sample",
+        "source",
+        "scene_summary"
+      ]
+    },
+    {
+      "t": 45.22,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 45.22,
+      "kind": "agent_say",
+      "text": "That looks vibrant and just getting started."
+    },
+    {
+      "t": 45.22,
+      "kind": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Keep cooking",
+          "Add zucchini",
+          "Taste check"
+        ]
+      }
+    },
+    {
+      "t": 45.22,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 45.22,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "chips",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 45.7,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 45.7,
+      "kind": "agent_say",
+      "text": "The broccoli looks bright green and the carrots still look firm, so give it a little longer until the timer ends."
+    },
+    {
+      "t": 45.7,
+      "kind": "status",
+      "text": ""
+    }
+  ],
+  "notes": "Camera path: Chromium fake camera fed the CC0 fridge photo, then the CC0 pan photo (swapped before \"Is it done?\"). The photo card next to the orb shows what Halo looked at. Chip pokes: the finger touches the chip and the chip handler is triggered at contact (same reason as clip 1). Hero push-in on the demonstration hands at the \"hero\" marker."
+}

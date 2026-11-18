@@ -1,0 +1,82 @@
+{
+  "clip": "01_start.mp4",
+  "duration_s": 21.6,
+  "captured_fps": 59.7,
+  "output_fps": 30,
+  "resolution": "1920x1080",
+  "events": [
+    {
+      "t": 3.51,
+      "kind": "user_action",
+      "action": "press Start"
+    },
+    {
+      "t": 5.09,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 6.43,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 7.31,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 7.31,
+      "kind": "agent_say",
+      "text": "Hello, welcome in. What would you like to do first?"
+    },
+    {
+      "t": 7.31,
+      "kind": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "What can I cook?",
+          "Make me a game",
+          "Explain how this works",
+          "Organise my work"
+        ]
+      }
+    },
+    {
+      "t": 7.31,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 7.31,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "chips",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 8.11,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 13.59,
+      "kind": "user_action",
+      "action": "pokes Got it"
+    },
+    {
+      "t": 13.63,
+      "kind": "sound",
+      "name": "press"
+    },
+    {
+      "t": 13.63,
+      "kind": "sound",
+      "name": "dismiss"
+    }
+  ],
+  "notes": "Start page with the halo ring (0-3.5), Start pressed at 3.5, mixed reality, onboarding card, live greeting and suggestion chips; the finger pokes \"Got it\" at ~13.6 (the card is closed by the app handler at the moment of contact: poke on UIKit panels does not fire in the emulator); glance at the chips lower left at the end."
+}

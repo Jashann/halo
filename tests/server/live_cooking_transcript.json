@@ -1,0 +1,510 @@
+{
+  "when": "2026-11-16T15:00:20.894Z",
+  "agentModel": "muse-ember-1.0",
+  "image": "fixtures/fridge.jpg (Wikimedia Commons, CC0), sent as a SAMPLE frame",
+  "transcription": {
+    "text": "What can I make for dinner with what is in my fridge?",
+    "ms": 2495
+  },
+  "turns": [
+    {
+      "user": "What can I make for dinner with what is in my fridge?",
+      "steps": [
+        {
+          "model": "muse-ember-1.0",
+          "latencyMs": 1738,
+          "say": "Let me peek in your fridge for you.",
+          "tools": [
+            {
+              "name": "look",
+              "args": {
+                "prompt": "ingredients in the fridge"
+              },
+              "ok": true,
+              "ms": 7,
+              "result": {
+                "frame": "attached in the next message",
+                "sample": true,
+                "width": 1280,
+                "height": 1041
+              }
+            }
+          ]
+        },
+        {
+          "model": "muse-ember-1.0",
+          "latencyMs": 2458,
+          "say": "Your camera is off, so I am using a sample fridge photo as an example.",
+          "tools": [
+            {
+              "name": "show_panel",
+              "args": {
+                "id": "dinner-idea",
+                "place": {
+                  "near": "counter-1"
+                },
+                "size": "medium",
+                "spec": {
+                  "accent": "#ffb000",
+                  "bullets": [
+                    "Spinach, cherry tomatoes, eggs",
+                    "Zucchini, eggplant, broccoli, carrots",
+                    "Lemon, grapefruit, kiwi, lime for salad"
+                  ],
+                  "steps": [
+                    "Chop zucchini, eggplant, broccoli and carrots",
+                    "Saute veg, then wilt spinach and tomatoes in",
+                    "Whisk eggs, pour over veg, cook until set",
+                    "Serve with lemon and a citrus side"
+                  ],
+                  "subtitle": "From the sample fridge photo",
+                  "text": "A veggie frittata uses most of what is visible and needs only oil and salt."
+                },
+                "title": "Dinner: Veggie Frittata"
+              },
+              "ok": true,
+              "ms": 0,
+              "result": {
+                "done": true,
+                "id": "dinner-idea"
+              }
+            },
+            {
+              "name": "set_chips",
+              "args": {
+                "chips": [
+                  "Next step",
+                  "Set a timer",
+                  "Swap an ingredient"
+                ]
+              },
+              "ok": true,
+              "ms": 0,
+              "result": {
+                "done": true,
+                "id": null
+              }
+            }
+          ]
+        },
+        {
+          "model": "muse-ember-1.0",
+          "latencyMs": 1157,
+          "say": "Try the frittata, it uses the veg and eggs with just oil and salt.",
+          "tools": []
+        }
+      ]
+    },
+    {
+      "user": "Sounds good. Show me how to cut the vegetables and set a timer for the pan.",
+      "steps": [
+        {
+          "model": "muse-ember-1.0",
+          "latencyMs": 2759,
+          "say": "Got it, a cutting demo and pan timer coming right up.",
+          "tools": [
+            {
+              "name": "show_panel",
+              "args": {
+                "id": "cutting-guide",
+                "place": {
+                  "near": "counter-1",
+                  "offset": [
+                    0,
+                    0.35,
+                    0
+                  ]
+                },
+                "size": "medium",
+                "spec": {
+                  "accent": "#ffb000",
+                  "steps": [
+                    "Put veg on a stable board, trim ends",
+                    "Zucchini and eggplant: halve lengthways, then dice",
+                    "Broccoli: cut florets into small pieces",
+                    "Carrots: cut into small rounds or dice",
+                    "Keep pieces even so they cook together"
+                  ],
+                  "subtitle": "Claw grip, fingertips tucked, slow and steady"
+                },
+                "title": "Cutting the Veg"
+              },
+              "ok": true,
+              "ms": 0,
+              "result": {
+                "done": true,
+                "id": "cutting-guide"
+              }
+            },
+            {
+              "name": "ghost_hands",
+              "args": {
+                "at": {
+                  "near": "counter-1"
+                },
+                "label": "Claw grip, then dice slowly",
+                "motion": "dice"
+              },
+              "ok": true,
+              "ms": 0,
+              "result": {
+                "done": true,
+                "id": null
+              }
+            },
+            {
+              "name": "timer",
+              "args": {
+                "at": {
+                  "near": "stove-1"
+                },
+                "label": "Pan veg cooking",
+                "seconds": 300
+              },
+              "ok": true,
+              "ms": 0,
+              "result": {
+                "done": true,
+                "id": null
+              }
+            },
+            {
+              "name": "highlight",
+              "args": {
+                "id": "chop-zone",
+                "label": "Chop here, board stable",
+                "shape": "zone",
+                "target": {
+                  "surface_id": "counter-1"
+                }
+              },
+              "ok": true,
+              "ms": 0,
+              "result": {
+                "done": true,
+                "id": "chop-zone"
+              }
+            },
+            {
+              "name": "set_chips",
+              "args": {
+                "chips": [
+                  "Next step",
+                  "Swap an ingredient",
+                  "Show the frittata step"
+                ]
+              },
+              "ok": true,
+              "ms": 0,
+              "result": {
+                "done": true,
+                "id": null
+              }
+            }
+          ]
+        },
+        {
+          "model": "muse-ember-1.0",
+          "latencyMs": 1069,
+          "say": "Watch the claw grip, then start the pan timer and keep pieces even.",
+          "tools": []
+        }
+      ]
+    }
+  ],
+  "wire": [
+    {
+      "ms": 1130,
+      "dir": "server->client",
+      "type": "status",
+      "text": "Listening..."
+    },
+    {
+      "ms": 3613,
+      "dir": "server->client",
+      "type": "heard",
+      "text": "What can I make for dinner with what is in my fridge?"
+    },
+    {
+      "ms": 3613,
+      "dir": "server->client",
+      "type": "status",
+      "text": "Thinking..."
+    },
+    {
+      "ms": 5349,
+      "dir": "server->client",
+      "type": "say",
+      "text": "Let me peek in your fridge for you."
+    },
+    {
+      "ms": 5349,
+      "dir": "server->client",
+      "type": "status",
+      "text": "Looking..."
+    },
+    {
+      "ms": 5349,
+      "dir": "server->client",
+      "type": "tool_call",
+      "name": "look",
+      "args": {
+        "prompt": "ingredients in the fridge"
+      }
+    },
+    {
+      "ms": 5357,
+      "dir": "server->client",
+      "type": "status",
+      "text": "Working..."
+    },
+    {
+      "ms": 7814,
+      "dir": "server->client",
+      "type": "say",
+      "text": "Your camera is off, so I am using a sample fridge photo as an example."
+    },
+    {
+      "ms": 7814,
+      "dir": "server->client",
+      "type": "tool_call",
+      "name": "show_panel",
+      "args": {
+        "id": "dinner-idea",
+        "place": {
+          "near": "counter-1"
+        },
+        "size": "medium",
+        "spec": {
+          "accent": "#ffb000",
+          "bullets": [
+            "Spinach, cherry tomatoes, eggs",
+            "Zucchini, eggplant, broccoli, carrots",
+            "Lemon, grapefruit, kiwi, lime for salad"
+          ],
+          "steps": [
+            "Chop zucchini, eggplant, broccoli and carrots",
+            "Saute veg, then wilt spinach and tomatoes in",
+            "Whisk eggs, pour over veg, cook until set",
+            "Serve with lemon and a citrus side"
+          ],
+          "subtitle": "From the sample fridge photo",
+          "text": "A veggie frittata uses most of what is visible and needs only oil and salt."
+        },
+        "title": "Dinner: Veggie Frittata"
+      }
+    },
+    {
+      "ms": 7814,
+      "dir": "server->client",
+      "type": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Next step",
+          "Set a timer",
+          "Swap an ingredient"
+        ]
+      }
+    },
+    {
+      "ms": 7816,
+      "dir": "server->client",
+      "type": "status",
+      "text": "Working..."
+    },
+    {
+      "ms": 8971,
+      "dir": "server->client",
+      "type": "say",
+      "text": "Try the frittata, it uses the veg and eggs with just oil and salt."
+    },
+    {
+      "ms": 8971,
+      "dir": "server->client",
+      "type": "status",
+      "text": ""
+    },
+    {
+      "ms": 8973,
+      "dir": "server->client",
+      "type": "status",
+      "text": "Thinking..."
+    },
+    {
+      "ms": 11731,
+      "dir": "server->client",
+      "type": "say",
+      "text": "Got it, a cutting demo and pan timer coming right up."
+    },
+    {
+      "ms": 11731,
+      "dir": "server->client",
+      "type": "tool_call",
+      "name": "show_panel",
+      "args": {
+        "id": "cutting-guide",
+        "place": {
+          "near": "counter-1",
+          "offset": [
+            0,
+            0.35,
+            0
+          ]
+        },
+        "size": "medium",
+        "spec": {
+          "accent": "#ffb000",
+          "steps": [
+            "Put veg on a stable board, trim ends",
+            "Zucchini and eggplant: halve lengthways, then dice",
+            "Broccoli: cut florets into small pieces",
+            "Carrots: cut into small rounds or dice",
+            "Keep pieces even so they cook together"
+          ],
+          "subtitle": "Claw grip, fingertips tucked, slow and steady"
+        },
+        "title": "Cutting the Veg"
+      }
+    },
+    {
+      "ms": 11731,
+      "dir": "server->client",
+      "type": "tool_call",
+      "name": "ghost_hands",
+      "args": {
+        "at": {
+          "near": "counter-1"
+        },
+        "label": "Claw grip, then dice slowly",
+        "motion": "dice"
+      }
+    },
+    {
+      "ms": 11732,
+      "dir": "server->client",
+      "type": "tool_call",
+      "name": "timer",
+      "args": {
+        "at": {
+          "near": "stove-1"
+        },
+        "label": "Pan veg cooking",
+        "seconds": 300
+      }
+    },
+    {
+      "ms": 11732,
+      "dir": "server->client",
+      "type": "tool_call",
+      "name": "highlight",
+      "args": {
+        "id": "chop-zone",
+        "label": "Chop here, board stable",
+        "shape": "zone",
+        "target": {
+          "surface_id": "counter-1"
+        }
+      }
+    },
+    {
+      "ms": 11732,
+      "dir": "server->client",
+      "type": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Next step",
+          "Swap an ingredient",
+          "Show the frittata step"
+        ]
+      }
+    },
+    {
+      "ms": 11733,
+      "dir": "server->client",
+      "type": "status",
+      "text": "Working..."
+    },
+    {
+      "ms": 12801,
+      "dir": "server->client",
+      "type": "say",
+      "text": "Watch the claw grip, then start the pan timer and keep pieces even."
+    },
+    {
+      "ms": 12801,
+      "dir": "server->client",
+      "type": "status",
+      "text": ""
+    }
+  ],
+  "modelCalls": [
+    {
+      "t": 1794841213441,
+      "role": "agent",
+      "model": "muse-ember-1.0",
+      "latencyMs": 1738,
+      "tools": [
+        "look"
+      ],
+      "finish": "tool_calls",
+      "outTokens": 87,
+      "reasoningTokens": 20,
+      "contentChars": 35
+    },
+    {
+      "t": 1794841215906,
+      "role": "agent",
+      "model": "muse-ember-1.0",
+      "latencyMs": 2458,
+      "tools": [
+        "show_panel",
+        "set_chips"
+      ],
+      "finish": "tool_calls",
+      "outTokens": 600,
+      "reasoningTokens": 264,
+      "contentChars": 70
+    },
+    {
+      "t": 1794841217063,
+      "role": "agent",
+      "model": "muse-ember-1.0",
+      "latencyMs": 1157,
+      "tools": [],
+      "finish": "stop",
+      "outTokens": 151,
+      "reasoningTokens": 124,
+      "contentChars": 66
+    },
+    {
+      "t": 1794841219823,
+      "role": "agent",
+      "model": "muse-ember-1.0",
+      "latencyMs": 2759,
+      "tools": [
+        "show_panel",
+        "ghost_hands",
+        "timer",
+        "highlight",
+        "set_chips"
+      ],
+      "finish": "tool_calls",
+      "outTokens": 697,
+      "reasoningTokens": 128,
+      "contentChars": 53
+    },
+    {
+      "t": 1794841220893,
+      "role": "agent",
+      "model": "muse-ember-1.0",
+      "latencyMs": 1069,
+      "tools": [],
+      "finish": "stop",
+      "outTokens": 53,
+      "reasoningTokens": 29,
+      "contentChars": 67
+    }
+  ]
+}

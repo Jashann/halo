@@ -1,0 +1,320 @@
+{
+  "clip": "05_agents.mp4",
+  "duration_s": 69.93,
+  "captured_fps": 59.9,
+  "output_fps": 30,
+  "resolution": "1920x1080",
+  "events": [
+    {
+      "t": 1.51,
+      "kind": "user_action",
+      "action": "says",
+      "text": "Organise my work"
+    },
+    {
+      "t": 1.55,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 1.55,
+      "kind": "user_say",
+      "text": "Organise my work"
+    },
+    {
+      "t": 3.15,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 3.15,
+      "kind": "sound",
+      "name": "dismiss"
+    },
+    {
+      "t": 3.15,
+      "kind": "sound",
+      "name": "dismiss"
+    },
+    {
+      "t": 3.15,
+      "kind": "agent_say",
+      "text": "I'll clear the engine and set up a work map on your table, with sample tasks you can move between teams."
+    },
+    {
+      "t": 3.15,
+      "kind": "tool_call",
+      "name": "clear_scene",
+      "args": {}
+    },
+    {
+      "t": 3.15,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 3.15,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "cleared",
+        "panels",
+        "highlights",
+        "ghost_hands",
+        "programs",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 4.35,
+      "kind": "status",
+      "text": "Building it..."
+    },
+    {
+      "t": 26.91,
+      "kind": "sound",
+      "name": "score"
+    },
+    {
+      "t": 26.91,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 26.91,
+      "kind": "tool_call",
+      "name": "run_code",
+      "args": {
+        "id": "agent-map",
+        "js": "const T = aide.THREE;\nconst AGENTS = [\n  { name: 'Marketing', color: '#e0823a', x: -0.3 },\n  { name: 'Sales', color: '#3ab06a', x: -0.1 },\n  { name: 'Research', color: '#3a8de0', x: 0.1 },\n  { name: 'Ops', color: '#a05ad0', x: 0.3 }\n];\nconst CARD_Z = -0.28;\nconst TASKS = [\n  { name: 'Draft launch email', agent: 'Marketing' },\n  { name: 'Plan campaign', agent: 'Marketing' },\n  { name: 'Follow up leads', agent: 'Sales' },\n  { name: 'Update pipeline', agent: 'Sales' },\n  { name: 'Survey customers', agent: 'Research' },\n  { name: 'Test prototype', agent: 'Research' },\n  { name: 'Fix rota', agent: 'Ops' },\n  { name: 'Order supplies', agent: 'Ops' }\n];\n\naide.spawn('label', { text: 'Agent work map', position: [0, 0.32, CARD_Z], size: 0.032 });\naide.spawn('label', { text: 'Pinch a task, drop on agent', position: [0, 0.27, CARD_Z], size: 0.025 });\n\nfor (const a of AGENTS) {\n  a.card = aide.spawn('box', { size: [0.18, 0.12, 0.012], color: a.color, position: [a.x, 0.06, CARD_Z] });\n  a.title = aide.spawn('label', { text: a.name, position: [a.x, 0.15, CARD_Z], size: 0.028 });\n  a.base = aide.spawn('box', { size: [0.18, 0.01, 0.05], color: '#2f3338', position: [a.x, 0.005, CARD_Z] });\n}\n\nfor (const t of TASKS) {\n  t.card = aide.spawn('box', { size: [0.12, 0.012, 0.04], color: '#f6f3ec', position: [0, 0.02, 0] });\n  t.label = aide.spawn('label', { text: t.name, size: 0.025, position: [0, 0.05, 0] });\n}\n\nlet grabbed = null;\nlet grabHand = null;\nlet moves = 0;\nconst grabOffset = new T.Vector3();\n\nfunction layout() {\n  for (const a of AGENTS) {\n    const mine = TASKS.filter((t) => t.agent === a.name && t !== grabbed);\n    for (let i = 0; i < mine.length; i++) {\n      const t = mine[i];\n      const px = a.x;\n      const pz = CARD_Z + 0.12 + i * 0.06;\n      const py = 0.012 + (i % 2) * 0.002;\n      t.card.position.set(px, py, pz);\n      t.card.rotation.set(0, 0, 0);\n      t.label.position.set(px, py + 0.032, pz + 0.005);\n    }\n  }\n}\nlayout();\n\naide.say('Your agent work map is ready. Pinch a task card and drop it on another agent.');\naide.score(0);\n\naide.onPinch((e) => {\n  if (grabbed) return;\n  for (const t of TASKS) {\n    if (e.object === t.card) {\n      grabbed = t;\n      grabHand = e.hand;\n      grabOffset.copy(t.card.position).sub(e.point);\n      aide.sound.pop();\n      break;\n    }\n  }\n});\n\nconst tmp = new T.Vector3();\naide.onFrame(() => {\n  if (!grabbed) return;\n  const h = aide.hands[grabHand];\n  if (h.visible && h.pinching) {\n    tmp.copy(h.pinchPoint).add(grabOffset);\n    tmp.x = Math.max(-0.45, Math.min(0.45, tmp.x));\n    tmp.z = Math.max(-0.35, Math.min(0.35, tmp.z));\n    tmp.y = Math.max(0.03, Math.min(0.4, tmp.y));\n    grabbed.card.position.copy(tmp);\n    grabbed.label.position.set(tmp.x, tmp.y + 0.035, tmp.z);\n    return;\n  }\n  const t = grabbed;\n  grabbed = null;\n  let best = null;\n  let bestD = 0.16;\n  for (const a of AGENTS) {\n    const d = Math.hypot(t.card.position.x - a.x, t.card.position.z - (CARD_Z + 0.08));\n    if (d < bestD) { best = a; bestD = d; }\n  }\n  if (best && best.name !== t.agent) {\n    const from = t.agent;\n    t.agent = best.name;\n    moves += 1;\n    aide.score(moves);\n    aide.spawn('burst', { position: [best.x, 0.08, CARD_Z], color: best.color, count: 18 });\n    aide.sound.chime();\n    aide.say(t.name + ' moved to ' + best.name + '.');\n    aide.emit('task_moved', { task: t.name, to: best.name, from: from });\n    if (moves >= 3) {\n      aide.done('work map built on plane-3, ' + moves + ' tasks reorganised, last: ' + t.name + ' to ' + best.name);\n    }\n  } else {\n    aide.sound.tick();\n  }\n  layout();\n});",
+        "at": {
+          "near": "plane-3",
+          "offset": [
+            0,
+            0.05,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "t": 26.91,
+      "kind": "tool_call",
+      "name": "show_panel",
+      "args": {
+        "id": "work-panel",
+        "title": "Organise your work",
+        "place": {
+          "near": "plane-3",
+          "offset": [
+            0.6,
+            0.3,
+            0
+          ]
+        },
+        "size": "small",
+        "spec": {
+          "text": "These are sample tasks. Pinch a task card and drop it on a different agent to reassign it.",
+          "bullets": [
+            "Marketing, Sales, Research, Ops",
+            "Drop a task on an agent to move it"
+          ]
+        }
+      }
+    },
+    {
+      "t": 26.91,
+      "kind": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Move a task",
+          "Add a task",
+          "Show all agents"
+        ]
+      }
+    },
+    {
+      "t": 26.91,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 26.91,
+      "kind": "event",
+      "name": "game_score",
+      "data": {
+        "id": "agent-map",
+        "score": 0
+      }
+    },
+    {
+      "t": 26.91,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "running",
+        "objects",
+        "anchor_surface",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 26.91,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "position",
+        "buttons",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 26.91,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "chips",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 27.87,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 27.87,
+      "kind": "agent_say",
+      "text": "Your work map is on the table, using sample tasks. Pinch a task card and drop it on Marketing, Sales, Research or Ops to move it."
+    },
+    {
+      "t": 27.87,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 27.87,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 29.39,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 54.88,
+      "kind": "user_action",
+      "action": "pinch right"
+    },
+    {
+      "t": 54.99,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 57.32,
+      "kind": "user_action",
+      "action": "release right"
+    },
+    {
+      "t": 57.39,
+      "kind": "sound",
+      "name": "score"
+    },
+    {
+      "t": 57.39,
+      "kind": "sound",
+      "name": "chime"
+    },
+    {
+      "t": 57.39,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 57.39,
+      "kind": "event",
+      "name": "game_score",
+      "data": {
+        "id": "agent-map",
+        "score": 1
+      }
+    },
+    {
+      "t": 57.39,
+      "kind": "event",
+      "name": "task_moved",
+      "data": {
+        "task": "Draft launch email",
+        "to": "Research",
+        "from": "Marketing"
+      }
+    },
+    {
+      "t": 58.59,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 58.59,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 60.35,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 60.35,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 60.35,
+      "kind": "agent_say",
+      "text": "Research now owns the launch email and will check it against customer findings."
+    },
+    {
+      "t": 60.35,
+      "kind": "tool_call",
+      "name": "update_panel",
+      "args": {
+        "id": "work-panel",
+        "patch": {
+          "spec": {
+            "text": "Research now owns Draft launch email. Pinch another task card to reassign it.",
+            "bullets": [
+              "Moved: Draft launch email to Research"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "t": 60.35,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 60.35,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "position",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 61.23,
+      "kind": "status",
+      "text": ""
+    }
+  ],
+  "notes": "Live generated agent map (sample data label on the table). The task card \"Draft launch email\" is pinched with the emulated hand, carried to Research and released; the program emits task_moved and Halo replies and updates its panel."
+}

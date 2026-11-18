@@ -1,0 +1,270 @@
+{
+  "clip": "07_unscripted.mp4",
+  "duration_s": 100.18,
+  "captured_fps": 59.9,
+  "output_fps": 30,
+  "resolution": "1920x1080",
+  "events": [
+    {
+      "t": 1.52,
+      "kind": "user_action",
+      "action": "says",
+      "text": "Build me a little solar system on my desk that I can spin"
+    },
+    {
+      "t": 1.55,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 1.55,
+      "kind": "user_say",
+      "text": "Build me a little solar system on my desk that I can spin"
+    },
+    {
+      "t": 2.59,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 2.59,
+      "kind": "sound",
+      "name": "dismiss"
+    },
+    {
+      "t": 2.59,
+      "kind": "agent_say",
+      "text": "I will clear the work map and build a little spinning solar system on your desk."
+    },
+    {
+      "t": 2.59,
+      "kind": "tool_call",
+      "name": "clear_scene",
+      "args": {}
+    },
+    {
+      "t": 2.59,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 2.59,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "cleared",
+        "panels",
+        "highlights",
+        "ghost_hands",
+        "programs",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 4.19,
+      "kind": "status",
+      "text": "Building it..."
+    },
+    {
+      "t": 42.21,
+      "kind": "tool_call",
+      "name": "run_code",
+      "args": {
+        "id": "solar-system",
+        "js": "const T = aide.THREE;\nconst CY = 0.15;\nconst CX = 0, CZ = -0.05;\nconst sunPos = new T.Vector3(CX, CY, CZ);\n\nconst sunMat = new T.MeshStandardMaterial({ color: '#ffdd33', emissive: '#ffbb00', emissiveIntensity: 1.6, roughness: 0.5 });\nconst sun = new T.Mesh(new T.SphereGeometry(0.06, 32, 24), sunMat);\nsun.position.copy(sunPos);\naide.scene.add(sun);\nconst glowMat = new T.MeshBasicMaterial({ color: '#ffec9e', transparent: true, opacity: 0.22 });\nconst glow = new T.Mesh(new T.SphereGeometry(0.075, 32, 24), glowMat);\nglow.position.copy(sunPos);\naide.scene.add(glow);\nconst light = new T.PointLight(0xfff2c0, 1.2, 1.5);\nlight.position.copy(sunPos);\naide.scene.add(light);\n\n// planet data: name, color, size, orbitR, speed\nconst DEFS = [\n  { name: 'Mercury', color: '#9e8e82', size: 0.009, r: 0.09, speed: 0.42 },\n  { name: 'Venus', color: '#e8c47a', size: 0.014, r: 0.14, speed: 0.32 },\n  { name: 'Earth', color: '#3a8de0', size: 0.015, r: 0.19, speed: 0.27 },\n  { name: 'Mars', color: '#e0523a', size: 0.011, r: 0.24, speed: 0.22 },\n  { name: 'Jupiter', color: '#d8a86a', size: 0.032, r: 0.32, speed: 0.15 },\n  { name: 'Saturn', color: '#e6d49a', size: 0.027, r: 0.40, speed: 0.12 },\n  { name: 'Uranus', color: '#8fd8d8', size: 0.019, r: 0.48, speed: 0.09 },\n  { name: 'Neptune', color: '#4a6de0', size: 0.018, r: 0.55, speed: 0.07 },\n];\nconst ringMat = new T.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.28 });\nfor (const d of DEFS) {\n  const ring = new T.Mesh(new T.TorusGeometry(d.r, 0.0009, 6, 96), ringMat);\n  ring.rotation.x = Math.PI / 2;\n  ring.position.copy(sunPos);\n  aide.scene.add(ring);\n}\n// Saturn ring\nconst saturnRingMat = new T.MeshBasicMaterial({ color: '#d8c890', transparent: true, opacity: 0.6, side: T.DoubleSide });\n\nconst planets = [];\nDEFS.forEach((d, i) => {\n  const b = aide.spawn('ball', { radius: d.size, color: d.color, position: [CX + d.r, CY, CZ] });\n  const lbl = aide.spawn('label', { text: d.name, size: 0.025, position: [CX + d.r, CY + 0.045, CZ] });\n  lbl.visible = false;\n  let satRing = null;\n  if (d.name === 'Saturn') {\n    satRing = new T.Mesh(new T.TorusGeometry(d.size * 1.7, 0.0025, 6, 32), saturnRingMat);\n    satRing.rotation.x = Math.PI / 2 - 0.35;\n    b.add(satRing);\n  }\n  planets.push({ def: d, obj: b, label: lbl, angle: i * 0.8, paused: false });\n});\n\nconst title = aide.spawn('label', { text: 'Solar System', size: 0.03, position: [CX, CY + 0.22, CZ - 0.05] });\nconst hint = aide.spawn('label', { text: 'Drag to spin - pinch planet for name', size: 0.025, position: [CX, CY + 0.175, CZ - 0.05] });\n\nconst toggle = aide.spawn('box', { size: [0.11, 0.025, 0.05], color: '#2fbf71', position: [CX, 0.03, 0.28] });\nconst toggleLabel = aide.spawn('label', { text: 'Pause', size: 0.025, position: [CX, 0.075, 0.28] });\nconst spinLabel = aide.spawn('label', { text: 'Spin: drag', size: 0.025, position: [CX - 0.18, 0.06, 0.22] });\n\nlet globalPaused = false;\nlet yaw = 0;\nlet spinVel = 0;\nlet dragHand = null;\nlet lastX = 0, lastZ = 0;\nlet pokeCool = 0;\n\naide.say('Your solar system is ready. Pinch and drag to spin it.');\naide.emit('built', { planets: 8, surface: 'plane-3' });\n\naide.onPinch((e) => {\n  // planet pinch -> pause/resume + name\n  const p = planets.find((pl) => pl.obj === e.object);\n  if (p) {\n    p.paused = !p.paused;\n    p.label.visible = p.paused;\n    aide.sound.pop();\n    aide.say(p.paused ? p.name + ' paused.' : p.name + ' moving.');\n    aide.emit('planet_toggled', { planet: p.def.name, paused: p.paused });\n    return;\n  }\n  if (e.object === toggle) {\n    globalPaused = !globalPaused;\n    toggleLabel.setText(globalPaused ? 'Paused - poke to play' : 'Pause');\n    toggle.material.color.set(globalPaused ? '#e0523a' : '#2fbf71');\n    aide.sound.tick();\n    return;\n  }\n  // empty-space pinch -> spin drag\n  if (!dragHand && e.object === null) {\n    dragHand = e.hand;\n    lastX = e.point.x;\n    lastZ = e.point.z;\n    spinVel = 0;\n  }\n});\n\nconst tmp = new T.Vector3();\naide.onFrame((dt, t) => {\n  pokeCool -= dt;\n  // spin drag\n  if (dragHand) {\n    const h = aide.hands[dragHand];\n    if (!h.visible || !h.pinching) {\n      dragHand = null;\n    } else {\n      const dx = h.pinchPoint.x - lastX;\n      const dz = h.pinchPoint.z - lastZ;\n      const d = dx * 4 + dz * 2;\n      yaw += d;\n      spinVel = spinVel * 0.85 + (d / Math.max(dt, 0.008)) * 0.15;\n      lastX = h.pinchPoint.x;\n      lastZ = h.pinchPoint.z;\n      if (Math.abs(spinVel) > 3) spinVel = Math.sign(spinVel) * 3;\n    }\n  } else if (Math.abs(spinVel) > 0.01) {\n    yaw += spinVel * dt;\n    spinVel *= (1 - dt * 1.2);\n  }\n  // open-palm flick: fast open hand over system adds spin\n  for (const k of ['left', 'right']) {\n    const h = aide.hands[k];\n    if (h.visible && !h.pinching && k !== dragHand) {\n      tmp.copy(h.palm || h.pinchPoint);\n      const dx = tmp.x - CX, dz = tmp.z - CZ;\n      if (Math.hypot(dx, dz) < 0.6 && Math.abs(tmp.y - CY) < 0.25) {\n        const vx = h.velocity.x;\n        if (Math.abs(vx) > 0.8) {\n          spinVel += vx * dt * 2.5;\n          if (Math.abs(spinVel) > 3) spinVel = Math.sign(spinVel) * 3;\n        }\n      }\n    }\n  }\n  // poke toggle\n  if (pokeCool <= 0) {\n    for (const k of ['left', 'right']) {\n      const h = aide.hands[k];\n      if (!h.visible) continue;\n      const tip = h.joints.indexTip;\n      if (tip.distanceTo(toggle.position) < 0.045) {\n        globalPaused = !globalPaused;\n        toggleLabel.setText(globalPaused ? 'Paused - poke to play' : 'Pause');\n        toggle.material.color.set(globalPaused ? '#e0523a' : '#2fbf71');\n        aide.sound.tick();\n        pokeCool = 0.8;\n        break;\n      }\n    }\n  }\n  // advance planets\n  if (!globalPaused) {\n    for (const p of planets) {\n      if (!p.paused) p.angle += p.def.speed * dt;\n    }\n    glow.scale.setScalar(1 + Math.sin(t * 2.2) * 0.04);\n  }\n  for (const p of planets) {\n    const a = p.angle + yaw;\n    const x = CX + Math.cos(a) * p.def.r;\n    const z = CZ + Math.sin(a) * p.def.r;\n    p.obj.position.set(x, CY, z);\n    if (p.label.visible) p.label.position.set(x, CY + 0.045, z);\n  }\n  sun.rotation.y += dt * 0.3;\n});",
+        "at": {
+          "near": "plane-3",
+          "offset": [
+            0,
+            0.15,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "t": 42.21,
+      "kind": "event",
+      "name": "built",
+      "data": {
+        "planets": 8,
+        "surface": "plane-3"
+      }
+    },
+    {
+      "t": 42.27,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 42.27,
+      "kind": "tool_call",
+      "name": "show_panel",
+      "args": {
+        "id": "solar-panel",
+        "title": "Your solar system",
+        "place": {
+          "near": "plane-3",
+          "offset": [
+            0.65,
+            0.3,
+            0
+          ]
+        },
+        "size": "small",
+        "spec": {
+          "text": "Flick with an open palm to spin the system. Pinch a planet to pause it and see its name.",
+          "bullets": [
+            "8 planets orbiting the sun",
+            "Gentle spin, seated and hands only"
+          ]
+        }
+      }
+    },
+    {
+      "t": 42.27,
+      "kind": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Spin faster",
+          "Pause orbits",
+          "Find Earth",
+          "Something else"
+        ]
+      }
+    },
+    {
+      "t": 42.27,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 42.27,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "running",
+        "objects",
+        "anchor_surface",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 42.27,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "position",
+        "buttons",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 42.27,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "chips",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 43.55,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 43.55,
+      "kind": "agent_say",
+      "text": "Your solar system is on the desk, with all eight planets orbiting. Flick it with an open palm to spin it, and pinch a planet to see its name."
+    },
+    {
+      "t": 43.55,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 43.55,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 44.27,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 44.27,
+      "kind": "agent_say",
+      "text": "It's ready and spinning slowly. Pinch Earth, the blue planet, to pause it and see its name."
+    },
+    {
+      "t": 44.27,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 80.61,
+      "kind": "user_action",
+      "action": "pinch right"
+    },
+    {
+      "t": 80.97,
+      "kind": "user_action",
+      "action": "pinch empty space and swipe to spin"
+    },
+    {
+      "t": 86.86,
+      "kind": "user_action",
+      "action": "pinch Earth"
+    },
+    {
+      "t": 86.87,
+      "kind": "user_action",
+      "action": "pinch right"
+    },
+    {
+      "t": 86.99,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 86.99,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 86.99,
+      "kind": "event",
+      "name": "planet_toggled",
+      "data": {
+        "planet": "Earth",
+        "paused": true
+      }
+    },
+    {
+      "t": 87.49,
+      "kind": "user_action",
+      "action": "release right"
+    },
+    {
+      "t": 87.79,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 87.79,
+      "kind": "agent_say",
+      "text": "Earth is paused. Pinch it again when you want it moving."
+    },
+    {
+      "t": 87.79,
+      "kind": "status",
+      "text": ""
+    }
+  ],
+  "notes": "Unplanned request; the real build wait is visible from 4.2 (\"Building it...\") to 42.2 (run_code). The spin swipe is at ~81 and the Earth pinch at ~86.9 (Earth pauses and shows its name)."
+}

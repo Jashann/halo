@@ -1,0 +1,339 @@
+{
+  "clip": "04_explain.mp4",
+  "duration_s": 133.78,
+  "captured_fps": 60,
+  "output_fps": 30,
+  "resolution": "1920x1080",
+  "events": [
+    {
+      "t": 1.51,
+      "kind": "user_action",
+      "action": "says",
+      "text": "Explain how an engine works"
+    },
+    {
+      "t": 1.55,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 1.55,
+      "kind": "user_say",
+      "text": "Explain how an engine works"
+    },
+    {
+      "t": 3.31,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 3.31,
+      "kind": "agent_say",
+      "text": "I'll build you a little working engine on your table, so you can poke through each stroke yourself."
+    },
+    {
+      "t": 3.31,
+      "kind": "status",
+      "text": "Building it..."
+    },
+    {
+      "t": 34.51,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 34.51,
+      "kind": "sound",
+      "name": "appear"
+    },
+    {
+      "t": 34.51,
+      "kind": "tool_call",
+      "name": "run_code",
+      "args": {
+        "id": "engine-demo",
+        "js": "const T = aide.THREE;\naide.say('How a four stroke engine works. Pinch Next to step through each stroke.');\nconst root = new T.Group();\nroot.position.set(0, 0, -0.18);\naide.scene.add(root);\n\nconst steel = new T.MeshStandardMaterial({ color: '#9aa4ad', metalness: 0.55, roughness: 0.4 });\nconst darkM = new T.MeshStandardMaterial({ color: '#3b4047', metalness: 0.3, roughness: 0.6 });\nconst glassM = new T.MeshStandardMaterial({ color: '#8fc4ff', transparent: true, opacity: 0.16, roughness: 0.1, metalness: 0.1, side: T.DoubleSide, depthWrite: false });\nconst blueM = new T.MeshStandardMaterial({ color: '#3a8de0', transparent: true, opacity: 0.55, roughness: 0.8 });\nconst orangeM = new T.MeshStandardMaterial({ color: '#ff9a2e', transparent: true, opacity: 0.75, emissive: '#ff6a00', emissiveIntensity: 0.7 });\nconst greyM = new T.MeshStandardMaterial({ color: '#9a9a9a', transparent: true, opacity: 0.5, roughness: 0.9 });\nconst sparkM = new T.MeshStandardMaterial({ color: '#ffd400', emissive: '#ffb000', emissiveIntensity: 0 });\nconst greenM = new T.MeshStandardMaterial({ color: '#3ab06a' });\nconst redM = new T.MeshStandardMaterial({ color: '#e0523a' });\n\nconst blockW = 0.30, blockH = 0.20, blockD = 0.16;\nconst block = new T.Mesh(new T.BoxGeometry(blockW, blockH, blockD), glassM);\nblock.position.y = 0.20;\nroot.add(block);\nconst headM = new T.Mesh(new T.BoxGeometry(0.32, 0.03, 0.18), darkM);\nheadM.position.y = 0.315;\nroot.add(headM);\nconst sump = new T.Mesh(new T.BoxGeometry(0.30, 0.06, 0.16), darkM);\nsump.position.y = 0.06;\nroot.add(sump);\nconst crankM = new T.Mesh(new T.CylinderGeometry(0.032, 0.032, 0.10, 20), steel);\ncrankM.rotation.x = Math.PI / 2;\ncrankM.position.y = 0.09;\nroot.add(crankM);\nconst crankPin = new T.Mesh(new T.SphereGeometry(0.011, 12, 12), redM);\nroot.add(crankPin);\nconst piston = new T.Mesh(new T.CylinderGeometry(0.055, 0.055, 0.045, 28), steel);\nroot.add(piston);\nconst rod = new T.Mesh(new T.BoxGeometry(0.014, 0.12, 0.014), steel);\nroot.add(rod);\nconst intakeV = new T.Mesh(new T.CylinderGeometry(0.013, 0.018, 0.05, 14), new T.MeshStandardMaterial({ color: '#3a8de0' }));\nintakeV.position.set(-0.05, 0.30, 0);\nroot.add(intakeV);\nconst exhaustV = new T.Mesh(new T.CylinderGeometry(0.013, 0.018, 0.05, 14), new T.MeshStandardMaterial({ color: '#e0523a' }));\nexhaustV.position.set(0.05, 0.30, 0);\nroot.add(exhaustV);\nconst plug = new T.Mesh(new T.SphereGeometry(0.012, 12, 12), sparkM);\nplug.position.set(0, 0.295, 0);\nroot.add(plug);\nconst pipeI = new T.Mesh(new T.CylinderGeometry(0.016, 0.016, 0.09, 12, 1, true), new T.MeshStandardMaterial({ color: '#3a8de0', transparent: true, opacity: 0.35, side: T.DoubleSide }));\npipeI.rotation.z = 0.7;\npipeI.position.set(-0.10, 0.33, 0);\nroot.add(pipeI);\nconst pipeE = new T.Mesh(new T.CylinderGeometry(0.016, 0.016, 0.09, 12, 1, true), new T.MeshStandardMaterial({ color: '#888888', transparent: true, opacity: 0.35, side: T.DoubleSide }));\npipeE.rotation.z = -0.7;\npipeE.position.set(0.10, 0.33, 0);\nroot.add(pipeE);\n\nconst charge = new T.Mesh(new T.CylinderGeometry(0.052, 0.052, 1, 24), blueM.clone());\nroot.add(charge);\nconst flame = new T.Mesh(new T.SphereGeometry(0.030, 16, 16), orangeM);\nflame.position.set(0, 0.26, 0);\nflame.visible = false;\nroot.add(flame);\nconst puff = new T.Mesh(new T.SphereGeometry(0.020, 14, 14), greyM);\npuff.visible = false;\nroot.add(puff);\n\nconst STROKES = [\n  { name: '1. Intake', desc: 'Piston down, intake open, blue fuel air in' },\n  { name: '2. Compression', desc: 'Both shut, piston up, charge squeezes' },\n  { name: '3. Power', desc: 'Spark flash pushes piston down' },\n  { name: '4. Exhaust', desc: 'Exhaust open, piston up, smoke out' }\n];\nconst strokeLabel = aide.spawn('label', { text: STROKES[0].name, position: [0, 0.44, -0.18], size: 0.032 });\nconst descLabel = aide.spawn('label', { text: STROKES[0].desc, position: [0, 0.395, -0.18], size: 0.025 });\n\nconst nextBtn = aide.spawn('box', { size: [0.12, 0.025, 0.06], color: '#ffd400', position: [-0.13, 0.013, 0.14] });\nconst nextLab = aide.spawn('label', { text: 'Next >', position: [-0.13, 0.055, 0.14], size: 0.027 });\nconst autoBtn = aide.spawn('box', { size: [0.12, 0.025, 0.06], color: '#3ab06a', position: [0.13, 0.013, 0.14] });\nconst autoLab = aide.spawn('label', { text: 'Auto: ON', position: [0.13, 0.055, 0.14], size: 0.027 });\n\nconst DUR = 2.6;\nlet stroke = 0, prog = 0, playing = false, autoOn = true, crankA = 0, puffT = 0;\nlet lastPoke = -10;\n\nfunction setStrokeUI() {\n  strokeLabel.setText(STROKES[stroke].name);\n  descLabel.setText(STROKES[stroke].desc);\n  autoLab.setText(autoOn ? 'Auto: ON' : 'Auto: OFF');\n}\nsetStrokeUI();\n\nfunction goNext() {\n  if (playing) return;\n  playing = true;\n  prog = 0;\n  puffT = 0;\n  aide.sound.tick();\n}\nfunction toggleAuto() {\n  autoOn = !autoOn;\n  setStrokeUI();\n  aide.sound.pop();\n  if (autoOn && !playing) { playing = true; prog = 0; }\n}\naide.panel({ title: '4-Stroke Engine', text: 'Step through Intake, Compression, Power, Exhaust.', buttons: [{ id: 'next', label: 'Next stroke' }, { id: 'auto', label: 'Auto on/off' }], onButton(id) { if (id === 'next') goNext(); if (id === 'auto') toggleAuto(); } });\n\naide.onPinch((e) => {\n  if (e.object === nextBtn) goNext();\n  else if (e.object === autoBtn) toggleAuto();\n});\n\nfunction nearBtn(p, b) {\n  const dx = p.x - b.position.x, dy = p.y - b.position.y, dz = p.z - b.position.z;\n  return (dx * dx + dy * dy + dz * dz) < 0.0036;\n}\nfunction checkPoke(now) {\n  if (now - lastPoke < 0.6) return;\n  for (const k of ['left', 'right']) {\n    const h = aide.hands[k];\n    if (!h.visible) continue;\n    const p = h.joints.indexTip;\n    if (nearBtn(p, nextBtn)) { lastPoke = now; goNext(); return; }\n    if (nearBtn(p, autoBtn)) { lastPoke = now; toggleAuto(); return; }\n  }\n}\n\nconst TOP = 0.245, BOT = 0.135;\nfunction pistonYFor(s, p) {\n  if (s === 0) return TOP + (BOT - TOP) * p;\n  if (s === 1) return BOT + (TOP - BOT) * p;\n  if (s === 2) return TOP + (BOT - TOP) * p;\n  return BOT + (TOP - BOT) * p;\n}\naide.emit('built', { model: 'four-stroke', strokes: 4 });\n\nif (autoOn) { playing = true; prog = 0; }\n\naide.onFrame((dt, t) => {\n  checkPoke(t);\n  if (playing) {\n    prog += dt / DUR;\n    crankA += dt * 2.2;\n    if (prog >= 1) {\n      prog = 0;\n      stroke = (stroke + 1) % 4;\n      setStrokeUI();\n      if (stroke === 2) aide.sound.pop();\n      if (stroke === 3) aide.sound.chime();\n      if (!autoOn) playing = false;\n    }\n  } else if (autoOn) { playing = true; prog = 0; }\n  const py = pistonYFor(stroke, playing ? prog : 1);\n  const pyW = pistonYFor(stroke, 0);\n  void pyW;\n  piston.position.set(0, py, -0.18);\n  const pinY = 0.09 + Math.sin(crankA) * 0.022;\n  const pinX = Math.cos(crankA) * 0.022;\n  crankM.rotation.y = crankA;\n  crankPin.position.set(pinX, pinY, -0.11);\n  const midY = (pinY + py) / 2;\n  rod.position.set(pinX * 0.3, midY, -0.18);\n  const dy = py - pinY;\n  rod.scale.y = Math.max(0.5, dy / 0.10);\n  rod.rotation.z = -pinX * 4.0;\n\n  const intakeOpen = stroke === 0;\n  const exhaustOpen = stroke === 3;\n  intakeV.position.y = intakeOpen ? 0.285 : 0.30;\n  exhaustV.position.y = exhaustOpen ? 0.285 : 0.30;\n\n  const topY = 0.30, botY = py + 0.023;\n  const h = Math.max(0.015, topY - botY);\n  charge.position.set(0, botY + h / 2, -0.18);\n  charge.scale.set(1, h, 1);\n  if (stroke === 0) { charge.material.color.set('#3a8de0'); charge.material.opacity = 0.35 + prog * 0.3; charge.visible = true; }\n  else if (stroke === 1) { charge.material.color.set('#2b6fd0'); charge.material.opacity = 0.6; charge.visible = true; }\n  else if (stroke === 2) { charge.material.color.set('#ff9a2e'); charge.material.opacity = 0.75; charge.visible = true; }\n  else { charge.material.color.set('#9a9a9a'); charge.material.opacity = 0.5 * (1 - prog * 0.7); charge.visible = true; }\n\n  const isPower = stroke === 2;\n  flame.visible = isPower && prog < 0.45;\n  if (flame.visible) {\n    const s = 1 + Math.sin(t * 18) * 0.15;\n    flame.scale.set(s, s, s);\n    flame.position.set(0, botY + 0.035, -0.18);\n    sparkM.emissiveIntensity = 3;\n  } else sparkM.emissiveIntensity = 0;\n\n  if (stroke === 3) {\n    puff.visible = true;\n    puffT += dt;\n    const k = playing ? prog : 1;\n    puff.position.set(0.05 + k * 0.08, 0.33 + k * 0.06, -0.18);\n    const ps = 0.7 + k * 1.1;\n    puff.scale.set(ps, ps, ps);\n    puff.material.opacity = 0.55 * (1 - k * 0.6);\n  } else if (stroke === 0) {\n    puff.visible = true;\n    const k = playing ? prog : 0.5;\n    puff.position.set(-0.10 + k * 0.06, 0.33 - k * 0.03, -0.18);\n    puff.scale.set(0.7, 0.7, 0.7);\n    puff.material.color.set('#3a8de0');\n    puff.material.opacity = 0.5;\n  } else { puff.visible = false; puff.material.color.set('#9a9a9a'); }\n\n  nextBtn.position.y = 0.013 + Math.sin(t * 2) * 0.001;\n});",
+        "at": {
+          "near": "plane-3",
+          "offset": [
+            0,
+            0.2,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "t": 34.51,
+      "kind": "tool_call",
+      "name": "show_panel",
+      "args": {
+        "id": "engine-panel",
+        "title": "How an engine works",
+        "place": {
+          "near": "plane-3",
+          "offset": [
+            0.55,
+            0.35,
+            0
+          ]
+        },
+        "size": "medium",
+        "spec": {
+          "steps": [
+            "Intake: piston drops, fuel and air enter",
+            "Compression: piston rises, mixture squeezes",
+            "Power: spark ignites, piston pushed down",
+            "Exhaust: piston rises, burnt gases leave",
+            "That push turns the crankshaft, making motion"
+          ]
+        }
+      }
+    },
+    {
+      "t": 34.51,
+      "kind": "tool_call",
+      "name": "set_chips",
+      "args": {
+        "chips": [
+          "Next stroke",
+          "Auto play",
+          "Explain the spark",
+          "Something else"
+        ]
+      }
+    },
+    {
+      "t": 34.51,
+      "kind": "status",
+      "text": "Working..."
+    },
+    {
+      "t": 34.51,
+      "kind": "event",
+      "name": "built",
+      "data": {
+        "model": "four-stroke",
+        "strokes": 4
+      }
+    },
+    {
+      "t": 34.51,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "running",
+        "objects",
+        "anchor_surface",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 34.51,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "id",
+        "position",
+        "buttons",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 34.51,
+      "kind": "tool_result",
+      "ok": true,
+      "keys": [
+        "chips",
+        "image_b64"
+      ]
+    },
+    {
+      "t": 35.55,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 35.55,
+      "kind": "agent_say",
+      "text": "Your engine is on the table, showing intake, compression, power and exhaust. Poke next to step through each stroke slowly."
+    },
+    {
+      "t": 35.55,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 35.55,
+      "kind": "status",
+      "text": "Thinking..."
+    },
+    {
+      "t": 36.27,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 36.27,
+      "kind": "agent_say",
+      "text": "It's ready on the table. Poke next, or switch on auto play, to watch the four strokes."
+    },
+    {
+      "t": 36.27,
+      "kind": "status",
+      "text": ""
+    },
+    {
+      "t": 39.71,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 42.27,
+      "kind": "sound",
+      "name": "chime"
+    },
+    {
+      "t": 50.19,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 52.75,
+      "kind": "sound",
+      "name": "chime"
+    },
+    {
+      "t": 60.59,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 63.23,
+      "kind": "sound",
+      "name": "chime"
+    },
+    {
+      "t": 71.07,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 72,
+      "kind": "user_action",
+      "action": "poke"
+    },
+    {
+      "t": 72.19,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 72.83,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 73.63,
+      "kind": "sound",
+      "name": "chime"
+    },
+    {
+      "t": 75.53,
+      "kind": "user_action",
+      "action": "poke"
+    },
+    {
+      "t": 80.76,
+      "kind": "user_action",
+      "action": "poke"
+    },
+    {
+      "t": 81.47,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 84.11,
+      "kind": "sound",
+      "name": "chime"
+    },
+    {
+      "t": 86.01,
+      "kind": "user_action",
+      "action": "poke"
+    },
+    {
+      "t": 91.87,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 94.51,
+      "kind": "sound",
+      "name": "chime"
+    },
+    {
+      "t": 102.35,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 104.99,
+      "kind": "sound",
+      "name": "chime"
+    },
+    {
+      "t": 105.33,
+      "kind": "user_action",
+      "action": "poke"
+    },
+    {
+      "t": 105.55,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 118.93,
+      "kind": "user_action",
+      "action": "poke"
+    },
+    {
+      "t": 119.15,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 123.83,
+      "kind": "user_action",
+      "action": "poke"
+    },
+    {
+      "t": 124.03,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 126.59,
+      "kind": "sound",
+      "name": "pop"
+    },
+    {
+      "t": 128.77,
+      "kind": "user_action",
+      "action": "poke"
+    },
+    {
+      "t": 128.99,
+      "kind": "sound",
+      "name": "tick"
+    },
+    {
+      "t": 131.55,
+      "kind": "sound",
+      "name": "chime"
+    }
+  ],
+  "notes": "The live agent generated a stroke-stepper engine (Next and Auto buttons poked with the index finger), not a pinch-to-expand one: this is what the model wrote in this take. Building wait from \"Building it...\" to run_code. Pokes are real fingertip contact read by the generated program."
+}
